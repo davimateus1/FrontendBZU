@@ -1,58 +1,161 @@
 import React from "react";
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Table, Container, Modalbody, Modal, ModalHeader, FormGroup, ModalFooter } from 'reactstrap';
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Button,
+  Table,
+  Container,
+  Modal,
+  ModalHeader,
+  FormGroup,
+  ModalFooter,
+  ModalBody,
+} from "reactstrap";
 
 const database = [
-  {matricula: 1, nome: "Davi", cpf: "11145687722", avaliacao: 9},
-  {matricula: 2, nome: "Michael", cpf: "14545687722", avaliacao: 10},
-  {matricula: 3, nome: "João", cpf: "11145658722", avaliacao: 3},
-  {matricula: 4, nome: "Rafael", cpf: "11145907722", avaliacao: 2},
-  {matricula: 5, nome: "Gomes", cpf: "11145652722", avaliacao: 8}
+  { matricula: 1, nome: "Davi", cpf: "11145687722", avaliacao: "9" },
+  { matricula: 2, nome: "Michael", cpf: "14545687722", avaliacao: "10" },
+  { matricula: 3, nome: "João", cpf: "11145658722", avaliacao: "3" },
+  { matricula: 4, nome: "Rafael", cpf: "11145907722", avaliacao: "2" },
+  { matricula: 5, nome: "Gomes", cpf: "11145652722", avaliacao: "8" },
 ];
 
-class App extends React.Component{
-
+class App extends React.Component {
   state = {
-    database: database
-  }
-  
-  render(){
-  return (
-    <>
-  <Container>
-    <Button color="primary"> Novo </Button>
-    <h4 class="mt-4 mb-5">Alunos cadastrados</h4>
-    <Table>
-      <thead>
-        <tr>
-          <th>Matricula</th>
-          <th>Nome</th>
-          <th>CPF</th>
-          <th>Avaliação</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          this.state.database.map((item) => (
-            <tr>
-              <td>{item.matricula}</td>
-              <td>{item.nome}</td>
-              <td>{item.cpf}</td>
-              <td>{item.avaliacao}</td>
-              <td>
-              <Button color="success"> Alterar </Button>
-              <Button color="danger"> Remover </Button>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </Table>
-  </Container>
-   </>
-  );
+    database: database,
+    form: {
+      matricula: "",
+      nome: "",
+      cpf: "",
+      avaliacao: "",
+    },
+    modalInserir: false,
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      form: {
+        ...this.state.form,
+        [e.target.nome]: e.target.value,
+      },
+    });
+  };
+
+  abrirModalInserir = () => {
+    this.setState({ modalInserir: true });
+  };
+
+  fecharModalInserir = () => {
+    this.setState({ modalInserir: false });
+  };
+
+  inserir = () => {
+    var novoValor = { ...this.state.form };
+    novoValor.matricula = this.state.database.length + 1;
+    var lista = this.state.database;
+    lista.push(novoValor);
+    this.setState({modalInserir: false, database: lista});
+  };
+
+  render() {
+    return (
+      <>
+        <Container>
+          <Button color="primary mt-3" onClick={() => this.abrirModalInserir()}>
+            {" "}
+            Novo{" "}
+          </Button>{" "}
+          <Button color="primary mt-3"> Gráfico </Button>
+          <h4 class="mt-4 mb-5">Alunos cadastrados</h4>
+          <Table>
+            <thead class="bg-warning">
+              <tr>
+                <th>Matricula</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Avaliação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.database.map((aluno) => (
+                <tr>
+                  <td>{aluno.matricula}</td>
+                  <td>{aluno.nome}</td>
+                  <td>{aluno.cpf}</td>
+                  <td>{aluno.avaliacao}</td>
+                  <td>
+                    <Button color="success"> Alterar </Button>{" "}
+                    <Button color="danger"> Remover </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+
+        <Modal isOpen={this.state.modalInserir}>
+          <ModalHeader>
+            <div>
+              <h4>Inserir novo aluno</h4>
+            </div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>Matricula:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.database.length + 1}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Nome:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="nome"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>CPF:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="cpf"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Avaliação:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="avaliacao"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button color="warning" onClick={() => this.inserir()}>
+              {" "}
+              Inserir{" "}
+            </Button>{" "}
+            <Button color="primary" onClick={() => this.fecharModalInserir()}>
+              {" "}
+              Voltar{" "}
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
+    );
   }
 }
 
