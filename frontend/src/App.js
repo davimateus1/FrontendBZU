@@ -31,6 +31,7 @@ class App extends React.Component {
     },
     modalInserir: false,
     modalAlterar: false,
+    modalApagar: false,
   };
 
   handleChange = (e) => {
@@ -58,6 +59,14 @@ class App extends React.Component {
     this.setState({ modalAlterar: false });
   };
 
+  abrirModalApagar = (aluno) => {
+    this.setState({ modalApagar: true, form: aluno });
+  };
+
+  fecharModalApagar = () => {
+    this.setState({ modalApagar: false });
+  };
+
   inserir = () => {
     var novoValor = { ...this.state.form };
     novoValor.matricula = this.state.database.length + 1;
@@ -78,6 +87,23 @@ class App extends React.Component {
       cont++;
     });
     this.setState({ modalAlterar: false, database: lista });
+  };
+
+  deletar = (data) => {
+    var aviso = window.confirm(
+      "Deseja realmente deletar o seguinte aluno? Matricula: " + data.matricula +", " + "Nome: " + data.nome +", " + "CPF: " + data.cpf + " e Avaliação: " + data.avaliacao + "." 
+    );
+    if (aviso) {
+      var cont = 0;
+      var lista = this.state.database;
+      lista.map((aluno) => {
+        if (data.matricula == aluno.matricula) {
+          lista.splice(cont, 1);
+        }
+        cont++;
+      });
+      this.setState({ modalApagar: false, database: lista });
+    }
   };
 
   render() {
@@ -117,7 +143,15 @@ class App extends React.Component {
                       {" "}
                       Alterar{" "}
                     </Button>{" "}
-                    <Button color="danger"> Remover </Button>
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        this.deletar(aluno);
+                      }}
+                    >
+                      {" "}
+                      Remover{" "}
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -229,15 +263,19 @@ class App extends React.Component {
           </ModalBody>
 
           <ModalFooter>
-            <Button color="warning" onClick={() => this.alterar(this.state.form)}> Alterar </Button>{" "}
+            <Button
+              color="warning"
+              onClick={() => this.alterar(this.state.form)}
+            >
+              {" "}
+              Alterar{" "}
+            </Button>{" "}
             <Button color="primary" onClick={() => this.fecharModalAlterar()}>
               {" "}
               Voltar{" "}
             </Button>
           </ModalFooter>
         </Modal>
-
-        
       </>
     );
   }
