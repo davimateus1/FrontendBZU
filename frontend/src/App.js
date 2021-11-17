@@ -30,13 +30,14 @@ class App extends React.Component {
       avaliacao: "",
     },
     modalInserir: false,
+    modalAlterar: false,
   };
 
   handleChange = (e) => {
     this.setState({
       form: {
         ...this.state.form,
-        [e.target.nome]: e.target.value,
+        [e.target.name]: e.target.value,
       },
     });
   };
@@ -49,12 +50,34 @@ class App extends React.Component {
     this.setState({ modalInserir: false });
   };
 
+  abrirModalAlterar = (aluno) => {
+    this.setState({ modalAlterar: true, form: aluno });
+  };
+
+  fecharModalAlterar = () => {
+    this.setState({ modalAlterar: false });
+  };
+
   inserir = () => {
     var novoValor = { ...this.state.form };
     novoValor.matricula = this.state.database.length + 1;
     var lista = this.state.database;
     lista.push(novoValor);
-    this.setState({modalInserir: false, database: lista});
+    this.setState({ modalInserir: false, database: lista });
+  };
+
+  alterar = (data) => {
+    var cont = 0;
+    var lista = this.state.database;
+    lista.map((aluno) => {
+      if (data.matricula == aluno.matricula) {
+        lista[cont].nome = data.nome;
+        lista[cont].cpf = data.cpf;
+        lista[cont].avaliacao = data.avaliacao;
+      }
+      cont++;
+    });
+    this.setState({ modalAlterar: false, database: lista });
   };
 
   render() {
@@ -85,7 +108,15 @@ class App extends React.Component {
                   <td>{aluno.cpf}</td>
                   <td>{aluno.avaliacao}</td>
                   <td>
-                    <Button color="success"> Alterar </Button>{" "}
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        this.abrirModalAlterar(aluno);
+                      }}
+                    >
+                      {" "}
+                      Alterar{" "}
+                    </Button>{" "}
                     <Button color="danger"> Remover </Button>
                   </td>
                 </tr>
@@ -102,16 +133,6 @@ class App extends React.Component {
           </ModalHeader>
 
           <ModalBody>
-            <FormGroup>
-              <label>Matricula:</label>
-              <input
-                className="form-control"
-                readOnly
-                type="text"
-                value={this.state.database.length + 1}
-              />
-            </FormGroup>
-
             <FormGroup>
               <label>Nome:</label>
               <input
@@ -154,6 +175,69 @@ class App extends React.Component {
             </Button>
           </ModalFooter>
         </Modal>
+
+        <Modal isOpen={this.state.modalAlterar}>
+          <ModalHeader>
+            <div>
+              <h4>Alteração do Aluno</h4>
+            </div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>Matricula:</label>
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.form.matricula}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Nome:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="nome"
+                onChange={this.handleChange}
+                value={this.state.form.nome}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>CPF:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="cpf"
+                onChange={this.handleChange}
+                value={this.state.form.cpf}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Avaliação:</label>
+              <input
+                className="form-control"
+                type="text"
+                name="avaliacao"
+                onChange={this.handleChange}
+                value={this.state.form.avaliacao}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button color="warning" onClick={() => this.alterar(this.state.form)}> Alterar </Button>{" "}
+            <Button color="primary" onClick={() => this.fecharModalAlterar()}>
+              {" "}
+              Voltar{" "}
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        
       </>
     );
   }
