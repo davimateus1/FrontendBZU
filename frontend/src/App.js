@@ -33,11 +33,11 @@ class App extends React.Component {
     if (isCpf) {
       let regex = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
       let cpf = e.target.value;
-      let cpfFormated = cpf.replace(regex, "$1.$2.$3-$4");
+      let cpfFormatado = cpf.replace(regex, "$1.$2.$3-$4");
       this.setState({
         form: {
           ...this.state.form,
-          cpf: cpfFormated,
+          cpf: cpfFormatado,
         },
       });
     } else {
@@ -92,19 +92,19 @@ class App extends React.Component {
 
   alterar = (data) => {
     var lista = this.state.database;
-    const resultIndex = lista.findIndex(
+    const resultadoIndex = lista.findIndex(
       (aluno) => aluno.matricula === data.matricula
     );
-    lista[resultIndex] = data;
+    lista[resultadoIndex] = data;
     this.setState({ modalAlterar: false, database: lista });
   };
 
   deletar = (data) => {
     var lista = this.state.database;
-    const result = lista.findIndex(
+    const resultado = lista.findIndex(
       (aluno) => aluno.matricula === data.matricula
     );
-    lista.splice(result, 1);
+    lista.splice(resultado, 1);
     this.setState({ modalApagar: false, database: lista });
   };
 
