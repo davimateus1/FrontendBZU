@@ -1,10 +1,10 @@
 import React from "react";
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ModalUpdate from "./Components/ModalUpdate";
 import ModalCreate from "./Components/ModalCreate";
 import Content from "./Components/Content";
 import ModalDelete from "./Components/ModalDelete";
+import ShowChart from "./Components/ShowChart";
 
 const database = [
   { matricula: 1, nome: "Davi", cpf: "111.456.877-22", avaliacao: "9" },
@@ -26,6 +26,7 @@ class App extends React.Component {
     modalInserir: false,
     modalAlterar: false,
     modalApagar: false,
+    modalChart: false,
   };
 
   handleChange = (e, isCpf) => {
@@ -55,6 +56,14 @@ class App extends React.Component {
 
   fecharModalInserir = () => {
     this.setState({ modalInserir: false });
+  };
+
+  abrirModalChart = () => {
+    this.setState({ modalChart: true });
+  };
+
+  fecharModalChart = () => {
+    this.setState({ modalChart: false });
   };
 
   abrirModalAlterar = (aluno) => {
@@ -105,9 +114,10 @@ class App extends React.Component {
         <Content
           abrirModalInserir={this.abrirModalInserir}
           abrirModalAlterar={this.abrirModalAlterar}
+          abrirModalApagar={this.abrirModalApagar}
+          abrirModalChart={this.abrirModalChart}
           database={this.state.database}
           deletar={this.deletar}
-          abrirModalApagar={this.abrirModalApagar}
         />
 
         <ModalCreate
@@ -131,6 +141,11 @@ class App extends React.Component {
           fecharModalApagar={this.fecharModalApagar}
           modalApagar={this.state.modalApagar}
           form={this.state.form}
+        />
+
+        <ShowChart
+          fecharModalChart={this.fecharModalChart}
+          modalChart={this.state.modalChart}
         />
       </>
     );

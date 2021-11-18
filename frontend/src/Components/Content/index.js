@@ -9,7 +9,7 @@ export default class Content extends Component {
               {" "}
               Novo{" "}
             </Button>{" "}
-            <Button color="primary mt-3"> Gráfico </Button>
+            <Button color="primary mt-3" onClick={() => this.props.abrirModalChart()}> Gráficos </Button>
             <h4 class="mt-4 mb-5">Alunos cadastrados</h4>
             <Table>
               <thead class="bg-warning">
@@ -52,7 +52,7 @@ export default class Content extends Component {
                 ))}
               </tbody>
             </Table>
-          </Container>
+          </Container>          
         )
     }
 }
