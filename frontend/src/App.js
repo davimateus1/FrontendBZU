@@ -1,23 +1,17 @@
 import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Button,
-  Table,
-  Container,
-  Modal,
-  ModalHeader,
-  FormGroup,
-  ModalFooter,
-  ModalBody,
-} from "reactstrap";
+import ModalUpdate from "./Components/ModalUpdate";
+import ModalCreate from "./Components/ModalCreate";
+import Content from "./Components/Content";
+import ModalDelete from "./Components/ModalDelete";
 
 const database = [
-  { matricula: 1, nome: "Davi", cpf: "11145687722", avaliacao: "9" },
-  { matricula: 2, nome: "Michael", cpf: "14545687722", avaliacao: "10" },
-  { matricula: 3, nome: "João", cpf: "11145658722", avaliacao: "3" },
-  { matricula: 4, nome: "Rafael", cpf: "11145907722", avaliacao: "2" },
-  { matricula: 5, nome: "Gomes", cpf: "11145652722", avaliacao: "8" },
+  { matricula: 1, nome: "Davi", cpf: "111.456.877-22", avaliacao: "9" },
+  { matricula: 2, nome: "Michael", cpf: "145.456.877-22", avaliacao: "10" },
+  { matricula: 3, nome: "João", cpf: "111.456.587-22", avaliacao: "3" },
+  { matricula: 4, nome: "Rafael", cpf: "111.459.077-22", avaliacao: "2" },
+  { matricula: 5, nome: "Gomes", cpf: "111.456.527-22", avaliacao: "8" },
 ];
 
 class App extends React.Component {
@@ -34,13 +28,25 @@ class App extends React.Component {
     modalApagar: false,
   };
 
-  handleChange = (e) => {
-    this.setState({
-      form: {
-        ...this.state.form,
-        [e.target.name]: e.target.value,
-      },
-    });
+  handleChange = (e, isCpf) => {
+    if (isCpf) {
+      let regex = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
+      let cpf = e.target.value;
+      let cpfFormated = cpf.replace(regex, "$1.$2.$3-$4");
+      this.setState({
+        form: {
+          ...this.state.form,
+          cpf: cpfFormated,
+        },
+      });
+    } else {
+      this.setState({
+        form: {
+          ...this.state.form,
+          [e.target.name]: e.target.value,
+        },
+      });
+    }
   };
 
   abrirModalInserir = () => {
@@ -76,206 +82,56 @@ class App extends React.Component {
   };
 
   alterar = (data) => {
-    var cont = 0;
     var lista = this.state.database;
-    lista.map((aluno) => {
-      if (data.matricula == aluno.matricula) {
-        lista[cont].nome = data.nome;
-        lista[cont].cpf = data.cpf;
-        lista[cont].avaliacao = data.avaliacao;
-      }
-      cont++;
-    });
+    const resultIndex = lista.findIndex(
+      (aluno) => aluno.matricula === data.matricula
+    );
+    lista[resultIndex] = data;
     this.setState({ modalAlterar: false, database: lista });
   };
 
   deletar = (data) => {
-    var aviso = window.confirm(
-      "Deseja realmente deletar o seguinte aluno? Matricula: " + data.matricula +", " + "Nome: " + data.nome +", " + "CPF: " + data.cpf + " e Avaliação: " + data.avaliacao + "." 
+    var lista = this.state.database;
+    const result = lista.findIndex(
+      (aluno) => aluno.matricula === data.matricula
     );
-    if (aviso) {
-      var cont = 0;
-      var lista = this.state.database;
-      lista.map((aluno) => {
-        if (data.matricula == aluno.matricula) {
-          lista.splice(cont, 1);
-        }
-        cont++;
-      });
-      this.setState({ modalApagar: false, database: lista });
-    }
+    lista.splice(result, 1);
+    this.setState({ modalApagar: false, database: lista });
   };
 
   render() {
     return (
       <>
-        <Container>
-          <Button color="primary mt-3" onClick={() => this.abrirModalInserir()}>
-            {" "}
-            Novo{" "}
-          </Button>{" "}
-          <Button color="primary mt-3"> Gráfico </Button>
-          <h4 class="mt-4 mb-5">Alunos cadastrados</h4>
-          <Table>
-            <thead class="bg-warning">
-              <tr>
-                <th>Matricula</th>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Avaliação</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.database.map((aluno) => (
-                <tr>
-                  <td>{aluno.matricula}</td>
-                  <td>{aluno.nome}</td>
-                  <td>{aluno.cpf}</td>
-                  <td>{aluno.avaliacao}</td>
-                  <td>
-                    <Button
-                      color="success"
-                      onClick={() => {
-                        this.abrirModalAlterar(aluno);
-                      }}
-                    >
-                      {" "}
-                      Alterar{" "}
-                    </Button>{" "}
-                    <Button
-                      color="danger"
-                      onClick={() => {
-                        this.deletar(aluno);
-                      }}
-                    >
-                      {" "}
-                      Remover{" "}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Container>
+        <Content
+          abrirModalInserir={this.abrirModalInserir}
+          abrirModalAlterar={this.abrirModalAlterar}
+          database={this.state.database}
+          deletar={this.deletar}
+          abrirModalApagar={this.abrirModalApagar}
+        />
 
-        <Modal isOpen={this.state.modalInserir}>
-          <ModalHeader>
-            <div>
-              <h4>Inserir novo aluno</h4>
-            </div>
-          </ModalHeader>
+        <ModalCreate
+          handleChange={this.handleChange}
+          inserir={this.inserir}
+          modalInserir={this.state.modalInserir}
+          form={this.state.form}
+          fecharModalInserir={this.fecharModalInserir}
+        />
 
-          <ModalBody>
-            <FormGroup>
-              <label>Nome:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="nome"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
+        <ModalUpdate
+          handleChange={this.handleChange}
+          alterar={this.alterar}
+          modalAlterar={this.state.modalAlterar}
+          form={this.state.form}
+          fecharModalAlterar={this.fecharModalAlterar}
+        />
 
-            <FormGroup>
-              <label>CPF:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="cpf"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>Avaliação:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="avaliacao"
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button color="warning" onClick={() => this.inserir()}>
-              {" "}
-              Inserir{" "}
-            </Button>{" "}
-            <Button color="primary" onClick={() => this.fecharModalInserir()}>
-              {" "}
-              Voltar{" "}
-            </Button>
-          </ModalFooter>
-        </Modal>
-
-        <Modal isOpen={this.state.modalAlterar}>
-          <ModalHeader>
-            <div>
-              <h4>Alteração do Aluno</h4>
-            </div>
-          </ModalHeader>
-
-          <ModalBody>
-            <FormGroup>
-              <label>Matricula:</label>
-              <input
-                className="form-control"
-                readOnly
-                type="text"
-                value={this.state.form.matricula}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>Nome:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="nome"
-                onChange={this.handleChange}
-                value={this.state.form.nome}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>CPF:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="cpf"
-                onChange={this.handleChange}
-                value={this.state.form.cpf}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>Avaliação:</label>
-              <input
-                className="form-control"
-                type="text"
-                name="avaliacao"
-                onChange={this.handleChange}
-                value={this.state.form.avaliacao}
-              />
-            </FormGroup>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              color="warning"
-              onClick={() => this.alterar(this.state.form)}
-            >
-              {" "}
-              Alterar{" "}
-            </Button>{" "}
-            <Button color="primary" onClick={() => this.fecharModalAlterar()}>
-              {" "}
-              Voltar{" "}
-            </Button>
-          </ModalFooter>
-        </Modal>
+        <ModalDelete
+          deletar={this.deletar}
+          fecharModalApagar={this.fecharModalApagar}
+          modalApagar={this.state.modalApagar}
+          form={this.state.form}
+        />
       </>
     );
   }
