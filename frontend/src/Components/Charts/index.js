@@ -3,7 +3,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { Container } from "reactstrap";
 
 const data = {
-  labels: ["Davi", "Michael", "João", "Rafael", "Gomes"],
+  labels: ["Davi W", "Michael L", "Jhonas A", "Rafael L", "Jhonathan A"],
   datasets: [
     {
       label: "Resultado do semestre",

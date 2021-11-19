@@ -7,11 +7,36 @@ import ModalDelete from "./Components/ModalDelete";
 import ShowChart from "./Components/ShowChart";
 
 const database = [
-  { matricula: 1, nome: "Davi", cpf: "111.456.877-22", avaliacao: "9" },
-  { matricula: 2, nome: "Michael", cpf: "145.456.877-22", avaliacao: "10" },
-  { matricula: 3, nome: "João", cpf: "111.456.587-22", avaliacao: "3" },
-  { matricula: 4, nome: "Rafael", cpf: "111.459.077-22", avaliacao: "2" },
-  { matricula: 5, nome: "Gomes", cpf: "111.456.527-22", avaliacao: "8" },
+  {
+    matricula: 1,
+    nome: "Davi Whinchester",
+    cpf: "111.456.877-22",
+    avaliacao: "9",
+  },
+  {
+    matricula: 2,
+    nome: "Michael Luffy",
+    cpf: "145.456.877-22",
+    avaliacao: "10",
+  },
+  {
+    matricula: 3,
+    nome: "Jhonas Almeida ",
+    cpf: "111.456.587-22",
+    avaliacao: "3",
+  },
+  {
+    matricula: 4,
+    nome: "Rafael Luccas",
+    cpf: "111.459.077-22",
+    avaliacao: "2",
+  },
+  {
+    matricula: 5,
+    nome: "Jhonathan Alencar",
+    cpf: "111.456.527-22",
+    avaliacao: "8",
+  },
 ];
 
 class App extends React.Component {
@@ -50,6 +75,7 @@ class App extends React.Component {
     }
   };
 
+  // Inicio do fluxo de Modal
   abrirModalInserir = () => {
     this.setState({ modalInserir: true });
   };
@@ -81,11 +107,78 @@ class App extends React.Component {
   fecharModalApagar = () => {
     this.setState({ modalApagar: false });
   };
+  // Fim do fluxo de modals
 
+  //Inicio validações
+  validacaoNome = (nome) => {
+    return !!nome.match(/[A-Z][a-z]* [A-Z][a-z]*/);
+  };
+
+  geradorMatricula = (list) => {
+    let matricula = 1;
+    if (list.length > 0) {
+      matricula =
+        this.state.database[this.state.database.length - 1].matricula +
+        parseInt(1);
+    }
+    return matricula;
+  };
+
+  geradorNome = (nome) => {
+    const nomeFormatado = this.validacaoNome(nome);
+    if (nomeFormatado) {
+      return nome;
+    } else {
+      alert("Nome inválido, por favor tente novamente!");
+    }
+  };
+
+  validacaoCpf = (cpf) => {
+    if (cpf.length === 14) {
+      const cpfEncontrado = this.state.database.find(
+        (form) => form.cpf === cpf
+      );
+      if (cpfEncontrado) {
+        return alert("Esse CPF já existe!");
+      }
+      return cpf;
+    }
+    alert("CPF Incompleto!");
+  };
+
+  validacaoAvaliacao = (avaliacao) => {
+    if (avaliacao >= 0 && avaliacao < 11 && avaliacao !== "") {
+      return avaliacao;
+    }
+    alert("Insira valores entre 0 e 10!");
+  };
+  // Fim validações
+
+  //Inicio Operações CRUD
   inserir = () => {
-    var novoValor = { ...this.state.form };
-    novoValor.matricula = this.state.database.length + 1;
     var lista = this.state.database;
+    var novoValor = { ...this.state.form };
+
+    const nome = this.geradorNome(this.state.form.nome);
+    if (nome) {
+      novoValor.nome = nome;
+    } else {
+      return;
+    }
+
+    const cpf = this.validacaoCpf(this.state.form.cpf);
+    if (cpf === undefined) {
+      return;
+    }
+
+    const avaliacao = this.validacaoAvaliacao(this.state.form.avaliacao);
+    if (avaliacao === undefined) {
+      return;
+    }
+
+    novoValor.avaliacao = avaliacao;
+    novoValor.cpf = cpf;
+    novoValor.matricula = this.geradorMatricula(lista);
     lista.push(novoValor);
     this.setState({ modalInserir: false, database: lista });
   };
@@ -95,6 +188,23 @@ class App extends React.Component {
     const resultadoIndex = lista.findIndex(
       (aluno) => aluno.matricula === data.matricula
     );
+
+    const nome = this.geradorNome(this.state.form.nome);
+    if (nome) {
+      this.state.nome = nome;
+    } else {
+      return;
+    }
+
+    const cpf = this.validacaoCpf(this.state.form.cpf);
+    if (cpf === undefined) {
+      return;
+    }
+
+    const avaliacao = this.validacaoAvaliacao(this.state.form.avaliacao);
+    if (avaliacao === undefined) {
+      return;
+    }
     lista[resultadoIndex] = data;
     this.setState({ modalAlterar: false, database: lista });
   };
@@ -107,6 +217,7 @@ class App extends React.Component {
     lista.splice(resultado, 1);
     this.setState({ modalApagar: false, database: lista });
   };
+  // Fim operações CRUD
 
   render() {
     return (
@@ -147,6 +258,7 @@ class App extends React.Component {
           fecharModalChart={this.fecharModalChart}
           modalChart={this.state.modalChart}
         />
+        
       </>
     );
   }

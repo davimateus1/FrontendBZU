@@ -12,7 +12,7 @@ export default class Content extends Component {
             <Button color="primary mt-3" onClick={() => this.props.abrirModalChart()}> Gráficos </Button>
             <h4 class="mt-4 mb-5">Alunos cadastrados</h4>
             <Table>
-              <thead class="bg-warning">
+              <thead class="bg-warning text-center">
                 <tr>
                   <th>Matricula</th>
                   <th>Nome</th>
@@ -21,7 +21,7 @@ export default class Content extends Component {
                   <th>Ações</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="text-center">
                 {this.props.database.map((aluno) => (
                   <tr>
                     <td>{aluno.matricula}</td>

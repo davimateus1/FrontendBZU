@@ -25,6 +25,7 @@ export default class ModalCreate extends Component {
               className="form-control"
               type="text"
               name="nome"
+              placeHolder="Ex: Davi Mateus"
               onChange={this.props.handleChange}
             />
           </FormGroup>
@@ -36,6 +37,7 @@ export default class ModalCreate extends Component {
               type="text"
               name="cpf"
               maxLength={14}
+              placeHolder="Apenas dígitos"
               onChange={e => this.props.handleChange(e, true)}
               value={this.props.form.cpf}
             />
@@ -47,6 +49,7 @@ export default class ModalCreate extends Component {
               className="form-control"
               type="text"
               name="avaliacao"
+              placeHolder="Apenas dígitos (0 - 10)"
               maxLength={2}
               onChange={this.props.handleChange}
             />
