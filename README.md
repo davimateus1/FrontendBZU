@@ -23,6 +23,7 @@
 - [Bootstrap](https://getbootstrap.com.br)
 - [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - [Reactstrap](https://reactstrap.github.io/?path=/story/home-installation--page)
+- [Chart JS](https://www.chartjs.org)
   
   <br>
   <h2 align="center">
