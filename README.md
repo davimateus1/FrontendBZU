@@ -1,19 +1,7 @@
 
   <h1 align="center">
-    Projeto Frontend CRUD - BZU Tech
+    Projeto Frontend CRUD
   </h1>
-
-  <h3>
-    Dados do candidato:
-  </h3>
-  <br>
-  <p>
-    <b>Nome:</b> Davi Mateus Gomes Almeida
-  </p>
-  <p>
-   <b>Vaga:</b> Estagiário Frontend
-  </p>
-  <br>
   
 ### Tecnologias utilizadas:
 
